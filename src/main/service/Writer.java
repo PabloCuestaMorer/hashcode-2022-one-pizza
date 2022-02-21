@@ -8,7 +8,7 @@ public class Writer {
 
     public void writeIntoFile(String solution, String fileName) {
         try (PrintWriter printWriter = new PrintWriter("output\\" + fileName, "UTF-8");) {
-            System.out.println("\n------- output " + fileName);
+            System.out.println("\n------- DONE written in: output/" + fileName);
             printWriter.print(solution);
         } catch (Exception e) {
             System.err.println("" + e);
