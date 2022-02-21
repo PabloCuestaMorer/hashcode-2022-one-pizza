@@ -1,9 +1,13 @@
 package main.service;
 
+import main.exception.IncorrectNameException;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Reader {
 
@@ -28,7 +32,6 @@ public class Reader {
         return ingredients;
     }
 
-
     public String getOnePizza(HashMap<String, Integer> ingredients) {
         int ingredientsCount = 0;
         String ingredientName = "";
@@ -44,12 +47,26 @@ public class Reader {
     private void checkIngredient(HashMap<String, Integer> ingredients, String[] ingredientsInput, boolean like) {
         for (int j = 0; j < ingredientsInput.length; j++) {
             if (j != 0) {
-                if (ingredients.containsKey(ingredientsInput[j])) {
-                    ingredients.put(ingredientsInput[j], like ? ingredients.get(ingredientsInput[j]) + 1 : ingredients.get(ingredientsInput[j]) - 1);
-                } else {
-                    ingredients.put(ingredientsInput[j], like ? 1 : 0);
+                try {
+                    assertIngredientName(ingredientsInput[j]);
+                    if (ingredients.containsKey(ingredientsInput[j])) {
+                        ingredients.put(ingredientsInput[j], like ? ingredients.get(ingredientsInput[j]) + 1 : ingredients.get(ingredientsInput[j]) - 1);
+                    } else {
+                        ingredients.put(ingredientsInput[j], like ? 1 : 0);
+                    }
+                }catch (IncorrectNameException e) {
+                    System.out.println(e.getMessage());
                 }
             }
+        }
+    }
+
+    private void assertIngredientName(String ingredient) throws IncorrectNameException {
+        Pattern pat = Pattern.compile("[a-z0-9]{1,15}");
+        Matcher mat = pat.matcher(ingredient);
+        String incorrectIngredients = "";
+        if (!mat.matches()) {
+            throw new IncorrectNameException("Incorrect ingredient name: " + ingredient);
         }
     }
 }
