@@ -10,17 +10,17 @@ public class Reader {
 
     private HashMap<String, Integer> ingredients;
 
-    public HashMap<String, Integer> getInputFromFile(String fileName) throws FileNotFoundException, IOException {
+    public HashMap<String, Integer> readFromFileToHashMap(String fileName) throws FileNotFoundException, IOException {
         ingredients = new HashMap<>();
 
         HashMap<String, Integer> ingredients = new HashMap<>();
 
         int numCustomers;
-        try (BufferedReader br = new BufferedReader(new FileReader("input\\" + fileName));) {
+        try (BufferedReader br = new BufferedReader(new FileReader("input\\" + fileName))) {
             numCustomers = Integer.parseInt(br.readLine());
 
             String line;
-            for (int i = 0; i < numCustomers*2; i++) {
+            for (int i = 0; i < numCustomers * 2; i++) {
                 line = br.readLine();
 
                 String ingredientsInput[] = line.split(" ");
@@ -31,18 +31,28 @@ public class Reader {
                     checkIngredient(ingredients, ingredientsInput, false);
                 }
             }
-        } catch (IOException ex) {
-            System.out.println("ex " + ex.getMessage());
         }
-
         return ingredients;
     }
 
-    private void checkIngredient (HashMap<String, Integer> ingredients, String[] ingredientsInput, boolean like) {
+
+    public String getOnePizza(HashMap<String, Integer> ingredients) {
+        int ingredientsCount = 0;
+        String ingredientName = "";
+        for (String key : ingredients.keySet()) {
+            if (ingredients.get(key) > 0) {
+                ingredientsCount++;
+                ingredientName = ingredientName + " " + key;
+            }
+        }
+        return ingredientsCount + ingredientName;
+    }
+
+    private void checkIngredient(HashMap<String, Integer> ingredients, String[] ingredientsInput, boolean like) {
         for (int j = 0; j < ingredientsInput.length; j++) {
             if (j != 0) {
-                if (ingredients.containsKey(ingredientsInput[j])){
-                    ingredients.put(ingredientsInput[j], like ? ingredients.get(ingredientsInput[j])+1 : ingredients.get(ingredientsInput[j])-1);
+                if (ingredients.containsKey(ingredientsInput[j])) {
+                    ingredients.put(ingredientsInput[j], like ? ingredients.get(ingredientsInput[j]) + 1 : ingredients.get(ingredientsInput[j]) - 1);
                 } else {
                     ingredients.put(ingredientsInput[j], like ? 1 : 0);
                 }
